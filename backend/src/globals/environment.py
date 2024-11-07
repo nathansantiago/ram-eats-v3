@@ -7,5 +7,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Environment(BaseSettings):
     model_config: SettingsConfigDict = SettingsConfigDict(env_file=".env")
-    API_KEY: str
-    API_SECRET: str
+    SUPABASE_URL: str
+    SUPABASE_KEY: str
+    SUPABASE_SERVICE_ROLE_KEY: str

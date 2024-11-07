@@ -2,14 +2,78 @@
 import re
 
 # external
+from supabase import AsyncClient
+from fastapi import HTTPException
 
 # internal
 from src.globals.environment import Environment
 
 class MealCalculationModule:
-    def __init__(self, environment: Environment):
+    def __init__(self, environment: Environment, supabase: AsyncClient):
         self.environment: Environment = environment
+        self.supabase: AsyncClient = supabase
 
+    def get_user_data(self, user_uid: str) -> dict[str, any]:
+        response = self.supabase.table('Users').select("*").eq('user_uid', user_uid).execute()
+        if not response.data:
+            raise HTTPException(status_code=404, detail="User not found")
+        return response.data[0]
+
+    def get_station_id(self, station_name: str, meal_time: str) -> int:
+        response = (
+            self.supabase.table('FoodStations')
+            .select("station_id, meal_id")
+            .eq("station_name", station_name)
+            .execute()
+        )
+
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Station not found")
+
+        meal_id = self.get_meal_id(meal_time)
+        station = next((record for record in response.data if record['meal_id'] == meal_id), None)
+
+        if not station:
+            raise HTTPException(status_code=404, detail=f"Station for {meal_time} not found")
+
+        return station['station_id']
+    
+    def get_meal_id(self, meal_time: str) -> int:
+        meal_response = self.supabase.table('Meals').select("meal_id").eq("meal_name", meal_time).execute()
+        if not meal_response.data:
+            raise HTTPException(status_code=404, detail="Meal not found")
+
+        return meal_response.data[0]['meal_id']
+
+    def get_menu_data(self, station: int) -> list[dict[str, any]]:
+        menu_response = self.supabase.table('MealsOptions').select("*").eq('station_id', station).execute()
+        menu_data = menu_response.data
+
+        option_ids = [item['option_id'] for item in menu_data]
+        nutrient_response = self.supabase.table('NutrientInformation').select(
+            "option_id, nutrient_name, nutrient_value"
+        ).in_("option_id", option_ids).execute()
+        nutrient_data = nutrient_response.data
+
+        nutrient_dict = {}
+        for item in nutrient_data:
+            option_id = item['option_id']
+            if option_id not in nutrient_dict:
+                nutrient_dict[option_id] = {}
+            nutrient_dict[option_id][item['nutrient_name']] = item['nutrient_value']
+
+        filtered_menu_data = [
+            {key: value for key, value in item.items() if key != 'ingredients'} for item in menu_data
+        ]
+
+        merged_menu_data = []
+        for item in filtered_menu_data:
+            option_id = item['option_id']
+            if option_id in nutrient_dict:
+                merged_item = {**item, **nutrient_dict[option_id]}
+                merged_menu_data.append(merged_item)
+
+        return merged_menu_data
 
     def categorize_items(menu: list[dict[str, any]]) -> list[dict[str, any]]:
         # Function to convert nutrient values to numbers
