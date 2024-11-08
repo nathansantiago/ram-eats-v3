@@ -75,7 +75,7 @@ class MealCalculationModule:
 
         return merged_menu_data
 
-    def categorize_items(menu: list[dict[str, any]]) -> list[dict[str, any]]:
+    def categorize_items(self, menu: list[dict[str, any]]) -> list[dict[str, any]]:
         # Function to convert nutrient values to numbers
         def convert_to_float(value: str) -> float:
             numeric_value = re.findall(r"[-+]?\d*\.\d+|\d+", value)
@@ -100,7 +100,7 @@ class MealCalculationModule:
         ))
         return categorized_menu
 
-    def calculate_daily_cal(user_data: dict[str, any]) -> int:
+    def calculate_daily_cal(self, user_data: dict[str, any]) -> int:
         # Calculate BMR using Mifflin-St Jeor Equation
         user_data['height'] *= 2.54  # Convert height from inches to cm
         user_data['weight'] *= 0.453592  # Convert weight from lbs to kg

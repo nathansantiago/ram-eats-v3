@@ -14,7 +14,7 @@ async def recommendation_recommend_meal(input: RecommendationRecommendMealInput,
     meal_calculation_module: MealCalculationModule = request.app.state.meal_calculation_module
     user_data = meal_calculation_module.get_user_data(input.user_id)
     simply_prepared_station_id = meal_calculation_module.get_station_id("Simply Prepared Grill", "Lunch")
-    kitchen_table_station_id = meal_calculation_module.get_station_id("Kitchen Table", "Lunch")
+    kitchen_table_station_id = meal_calculation_module.get_station_id("The Kitchen Table", "Lunch")
 
     simply_prepared_menu = meal_calculation_module.get_menu_data(simply_prepared_station_id)
     kitchen_table_menu = meal_calculation_module.get_menu_data(kitchen_table_station_id)
