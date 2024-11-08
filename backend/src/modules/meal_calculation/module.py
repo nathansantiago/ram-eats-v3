@@ -28,7 +28,7 @@ class MealCalculationModule:
         )
 
         if not response.data:
-            raise HTTPException(status_code=404, detail="Station not found")
+            raise HTTPException(status_code=404, detail="Station not found " + station_name)
 
         meal_id = self.get_meal_id(meal_time)
         station = next((record for record in response.data if record['meal_id'] == meal_id), None)
