@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 # external
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from supabase import AsyncClient, create_client
 
 # internal
@@ -37,6 +38,19 @@ async def lifespan(app: FastAPI):
     print("Shutting down")
     
 app: FastAPI = FastAPI(lifespan=lifespan)
+
+# Configure CORS
+origins = [
+    "http://localhost:3000",  # Your frontend's origin
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(recommendation_router)
 
