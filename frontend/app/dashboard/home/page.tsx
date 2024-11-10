@@ -13,9 +13,10 @@ import { Card, CardContent } from "@/components/ui/card"
 
 import axios from 'axios';
 import { supabase } from "@/lib/supabase";
+import { MealRecommendation, MealDetails, SelectedItem } from '@/app/models/models';
 
 const HomePage: React.FC = () => {
-    const [mealRecommendations, setMealRecommendations] = useState<any>(null);
+    const [mealRecommendations, setMealRecommendations] = useState<MealRecommendation>();
 
     useEffect(() => {
         const fetchMealRecommendations = async () => {
@@ -48,18 +49,28 @@ const HomePage: React.FC = () => {
                 }}
             >
                 <CarouselContent>
-                    {/* TODO: Add carousel items */}
-                    {mealRecommendations ? Array.from(mealRecommendations).map((_, index) => (
-                    <CarouselItem key={index}>
-                        <div className="p-1">
-                        <Card>
-                            <CardContent className="flex aspect-square items-center justify-center p-6">
-                            <span className="text-4xl font-semibold">{mealRecommendations[index]}</span>
-                            </CardContent>
-                        </Card>
-                        </div>
-                    </CarouselItem>
-                    )): null}
+                    {mealRecommendations && Object.entries(mealRecommendations.meal_information).map(([mealName, mealDetails]: [string, MealDetails]) => (
+                        <CarouselItem key={mealName}>
+                            <div className="p-1">
+                                <Card>
+                                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                                        <div>
+                                            <h3 className="text-2xl font-semibold">{mealName}</h3>
+                                            <div>
+                                                {Object.entries(mealDetails.selected_items).map(([itemName, itemDetails]: [string, SelectedItem]) => (
+                                                    <p key={itemName}>{itemName}: {itemDetails.number_of_servings} servings</p>
+                                                ))}
+                                            </div>
+                                            <p className="text-sm">Total Calories: {mealDetails.total_calories}</p>
+                                            <p className="text-sm">Total Protein: {mealDetails.total_protein}g</p>
+                                            <p className="text-sm">Total Carbs: {mealDetails.total_carbs}g</p>
+                                            <p className="text-sm">Total Fats: {mealDetails.total_fats}g</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </CarouselItem>
+                    ))}
                 </CarouselContent>
                 <div className='hidden sm:flex'>
                     <CarouselPrevious />
