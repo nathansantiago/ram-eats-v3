@@ -135,7 +135,7 @@ export default function Home() {
           priority
         />
       <h1 className="mb-8 title">RamEats</h1>
-      <div className="w-20 flex flex-col">
+      <div className="w-20 flex flex-col gap-2">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline">Login</Button>

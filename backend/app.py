@@ -9,7 +9,8 @@ from supabase import AsyncClient, create_client
 # internal
 from src.globals.environment import Environment
 from src.modules.meal_calculation.module import MealCalculationModule
-from src.api.recommend.routes import recommendation_router
+from src.api.recommendation.routes import recommendation_router
+from src.api.menu.routes import menu_router
 
 async def setup_supabase(app: FastAPI):
     environment: Environment = app.state.environment
@@ -53,6 +54,7 @@ app.add_middleware(
 )
 
 app.include_router(recommendation_router)
+app.include_router(menu_router)
 
 @app.get("/")
 async def root():
