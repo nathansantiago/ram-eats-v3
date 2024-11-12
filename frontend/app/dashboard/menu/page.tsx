@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useEffect, useState } from 'react';
 import {
     Accordion,
@@ -7,11 +9,11 @@ import {
   } from "@/components/ui/accordion"
 import axios from 'axios';
 import { supabase } from "@/lib/supabase";
-import { MealDetails, MealRecommendation, SelectedItem } from '@/app/models/models';
+import { MenuGetMenuOutput, MenuStations, MenuItem } from '@/app/models/models';
   
 
 const Menu: React.FC = () => {
-    const [menu, setMenu] = useState<MealRecommendation>();
+    const [menu, setMenu] = useState<MenuGetMenuOutput>();
 
     useEffect(() => {
         const fetchMenu = async () => {
@@ -32,13 +34,13 @@ const Menu: React.FC = () => {
 
     return (
         <div>
-            {menu && Object.entries(menu.meal_information).map(([mealName, mealDetails]: [string, MealDetails]) => (
-                <Accordion key={mealName} type="single" collapsible>
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+            {menu && Object.entries(menu.menu_stations).map(([stationName, menuItems]: [string, MenuItem[]]) => (
+                <Accordion key={stationName} type="single" collapsible>
+                    <AccordionItem value={stationName}>
+                        <AccordionTrigger>{stationName}</AccordionTrigger>
                         <AccordionContent>
-                            {Object.entries(mealDetails.selected_items).map(([itemName, itemDetails]: [string, SelectedItem]) => (
-                                <p key={itemName}>{itemName}: {itemDetails.number_of_servings} servings</p>
+                            {menuItems.map((item: MenuItem) => (
+                                <p key={item.option_id}>{item.option_name}</p>
                             ))}
                         </AccordionContent>
                     </AccordionItem>
