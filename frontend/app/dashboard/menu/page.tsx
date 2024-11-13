@@ -58,29 +58,29 @@ const Menu: React.FC = () => {
                         <AccordionContent>
                             {menuItems.map((item: MenuItem) => (
                                 <Drawer key={item.option_id}>
-                                    <DrawerTrigger onClick={() => setPortions(0)}>{item.option_name}</DrawerTrigger>
+                                    <DrawerTrigger onClick={() => setPortions(0)} className='text-base underline decoration-muted-foreground'>{item.option_name}</DrawerTrigger>
                                     <div className="mx-auto w-full max-w-sm">
                                     <DrawerContent>
                                     <DrawerHeader>
-                                    <DrawerTitle className='text-4xl font-bold'>{item.option_name}</DrawerTitle>
-                                        <div className='grid grid-cols-2 py-2'>
+                                    <DrawerTitle className='text-4xl font-bold text-center'>{item.option_name}</DrawerTitle>
+                                        <div className='grid grid-cols-2 text-left pl-4'>
                                         {/* <DrawerDescription>Amount Per Serving: {item.AmountPerServing}</DrawerDescription>
                                         <DrawerDescription>Amount Per Serving ½ cup: {item["AmountPerServing½cup"]}</DrawerDescription> */}
-                                            <DrawerDescription className='text-lg'>Calories: {item.Calories}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Total Fat: {item.TotalFat}g</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Saturated Fat: {item.SaturatedFat}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Trans Fat: {item.TransFat}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Cholesterol: {item.Cholesterol}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Sodium: {item.Sodium}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Total Carbohydrates: {item.TotalCarbohydrate}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Dietary Fiber: {item.DietaryFiber}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Sugars: {item.Sugars}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Added Sugar: {item.AddedSugar ? item.AddedSugar : "0g"}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Protein: {item.Protein}g</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Calcium: {item.Calcium}</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Iron: {item.Iron}mg</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Potassium: {item.Potassium}mg</DrawerDescription>
-                                            <DrawerDescription className='text-lg'>Vitamin D: {item.VitaminD}mcg</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Calories:</span> {item.Calories}</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Protein:</span> {item.Protein}g</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Total Carbs:</span> {item.TotalCarbohydrate}</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Total Fat:</span> {item.TotalFat}g</DrawerDescription>
+                                            <DrawerDescription className='text-lg px-4'>Dietary Fiber: {item.DietaryFiber}</DrawerDescription>
+                                            <DrawerDescription className='text-lg px-4'>Saturated Fat: {item.SaturatedFat}</DrawerDescription>
+                                            <DrawerDescription className='text-lg px-4'>Sugars: {item.Sugars}</DrawerDescription>
+                                            <DrawerDescription className='text-lg px-4'>Trans Fat: {item.TransFat}</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Iron:</span> {item.Iron}mg</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Sodium:</span> {item.Sodium}</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Calcium:</span> {item.Calcium}</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Vitamin D:</span> {item.VitaminD}mcg</DrawerDescription>
+                                            {/* <DrawerDescription className='text-lg'>Added Sugar: {item.AddedSugar ? item.AddedSugar : "0g"}</DrawerDescription> */}
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Potassium:</span> {item.Potassium}mg</DrawerDescription>
+                                            <DrawerDescription className='text-lg'><span className="font-bold">Cholesterol:</span> {item.Cholesterol}</DrawerDescription>
                                         </div>
                                         {(item.Soy || item.Wheat || item.Sesame) && (
                                                 <>
