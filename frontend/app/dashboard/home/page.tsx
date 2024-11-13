@@ -55,16 +55,18 @@ const HomePage: React.FC = () => {
                                 <Card>
                                     <CardContent className="flex aspect-square items-center justify-center p-6">
                                         <div>
-                                            <h3 className="text-2xl font-semibold">{mealName}</h3>
+                                            <h3 className="text-2xl font-bold">{mealName}</h3>
                                             <div>
                                                 {Object.entries(mealDetails.selected_items).map(([itemName, itemDetails]: [string, SelectedItem]) => (
-                                                    <p key={itemName}>{itemName}: {itemDetails.number_of_servings} servings</p>
+                                                    <p key={itemName}><span className='font-semibold'>{itemName}:</span> {itemDetails.number_of_servings} servings</p>
                                                 ))}
                                             </div>
-                                            <p className="text-sm">Total Calories: {mealDetails.total_calories}</p>
-                                            <p className="text-sm">Total Protein: {mealDetails.total_protein}g</p>
-                                            <p className="text-sm">Total Carbs: {mealDetails.total_carbs}g</p>
-                                            <p className="text-sm">Total Fats: {mealDetails.total_fats}g</p>
+                                            <div className='text-sm text-muted-foreground'>
+                                            <p className="text-sm"><span className='font-bold'>Total Calories:</span> {mealDetails.total_calories}</p>
+                                            <p className="text-sm"><span className='font-bold'>Total Protein:</span> {mealDetails.total_protein}g</p>
+                                            <p className="text-sm"><span className='font-bold'>Total Carbs:</span> {mealDetails.total_carbs}g</p>
+                                            <p className="text-sm"><span className='font-bold'>Total Fats:</span> {mealDetails.total_fats}g</p>
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
