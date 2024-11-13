@@ -34,7 +34,7 @@ const Menu: React.FC = () => {
 
     return (
         <div>
-            {menu && Object.entries(menu.menu_stations).map(([stationName, menuItems]: [string, MenuItem[]]) => (
+            {menu && Object.entries(menu.meal_information).map(([stationName, menuItems]: [string, MenuItem[]]) => (
                 <Accordion key={stationName} type="single" collapsible>
                     <AccordionItem value={stationName}>
                         <AccordionTrigger>{stationName}</AccordionTrigger>

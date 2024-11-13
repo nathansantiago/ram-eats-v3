@@ -21,7 +21,7 @@ export interface MealRecommendation {
 }
 
 export interface MenuGetMenuOutput {
-    menu_stations: MenuStations
+    meal_information: MenuStations
 }
 
 export interface MenuStations {
@@ -33,7 +33,7 @@ export interface MenuItem {
     station_id: number;
     option_name: string;
     AmountPerServing?: string;
-    // AmountPerServing½cup?: string;
+    "AmountPerServing½cup"?: string;
     Calories: number;
     TotalFat: number;
     SaturatedFat: string;
