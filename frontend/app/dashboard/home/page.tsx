@@ -15,6 +15,36 @@ import axios from 'axios';
 import { createClient } from "@/utils/supabase/client";
 import { MealRecommendation, MealDetails, SelectedItem } from '@/app/models/models';
 
+import { TrendingUp } from "lucide-react"
+import {
+  Label,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from "recharts"
+import {
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+
+const chartData = [
+  { browser: "safari", visitors: 1300, fill: "var(--color-safari)" },
+]
+
+const chartConfig = {
+    visitors: {
+      label: "Visitors",
+    },
+    safari: {
+      label: "Safari",
+      color: "hsl(var(--chart-2))",
+    },
+} satisfies ChartConfig
+
 const HomePage: React.FC = () => {
     const supabase = createClient();
     const [mealRecommendations, setMealRecommendations] = useState<MealRecommendation>();
@@ -41,9 +71,75 @@ const HomePage: React.FC = () => {
     }, []);
 
     return (
-        <>
+        <div className='flex flex-col w-full'>
+            <Card className="flex flex-col">
+                <CardHeader className="items-center pb-0">
+                    <CardTitle className='text-2xl font-bold'>Today's Calorie Goal</CardTitle>
+                    <CardDescription>November 11th 2024</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-1 pb-0">
+                    <ChartContainer
+                    config={chartConfig}
+                    className="mx-auto aspect-square max-h-[250px]"
+                    >
+                    <RadialBarChart
+                        data={chartData}
+                        startAngle={0}
+                        endAngle={chartData[0].visitors/2000*360}
+                        innerRadius={80}
+                        outerRadius={110}
+                    >
+                        <PolarGrid
+                        gridType="circle"
+                        radialLines={false}
+                        stroke="none"
+                        className="first:fill-muted last:fill-background"
+                        polarRadius={[86, 74]}
+                        />
+                        <RadialBar dataKey="visitors" background cornerRadius={10} />
+                        <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+                        <Label
+                            content={({ viewBox }) => {
+                            if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                return (
+                                <text
+                                    x={viewBox.cx}
+                                    y={viewBox.cy}
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                >
+                                    <tspan
+                                    x={viewBox.cx}
+                                    y={viewBox.cy}
+                                    className="fill-foreground text-4xl font-bold"
+                                    >
+                                    {chartData[0].visitors.toLocaleString()}
+                                    </tspan>
+                                    <tspan
+                                    x={viewBox.cx}
+                                    y={(viewBox.cy || 0) + 24}
+                                    className="fill-muted-foreground"
+                                    >
+                                    Calories
+                                    </tspan>
+                                </text>
+                                )
+                            }
+                            }}
+                        />
+                        </PolarRadiusAxis>
+                    </RadialBarChart>
+                    </ChartContainer>
+                </CardContent>
+                <CardFooter className="flex-col gap-2 text-sm">
+                    <div className="flex items-center gap-2 font-medium leading-none">
+                    Today's Calorie Goal: 2000
+                    </div>
+                </CardFooter>
+            </Card>
+
             <Carousel 
-                className="w-full max-w-xs"
+                className="w-full"
                 opts={{
                     align: "start",
                     loop: true,
@@ -80,7 +176,7 @@ const HomePage: React.FC = () => {
                     <CarouselNext />
                 </div>
             </Carousel>
-        </>
+        </div>
     );
 };
 
