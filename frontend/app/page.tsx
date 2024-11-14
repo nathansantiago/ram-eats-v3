@@ -14,114 +14,38 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { supabase } from "@/lib/supabase";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
+import { handleLogin, handleRegister } from "@/utils/auth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
+  const supabase = createClient();
+  const { toast } = useToast();
+
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  const router = useRouter();
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        router.push("/dashboard/home");
-      }
-    };
-    if (typeof window !== 'undefined') {
-      checkSession();
-    }
-  }, [router]);
-
-  async function handleLogin() {
-    // Check for null values
-    if (!email || !password) {
-      alert("Email and password are required.");
-      return;
-    }
-    
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      alert(error.message);
-    } else {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        router.push("/dashboard/home");
-      }
+  const loginClickAction = async () => {
+    try {(await handleLogin({email, password}))}
+    catch(error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
     }
   }
 
-  async function handleRegister() {
-    // Check for null values
-    if (!email || !password || !username) {
-      alert("Email, password, and username are required.");
-      return;
-    }
-
-    // Check for duplicate email
-    const { data: emailData, error: emailError } = await supabase
-      .from('Users')
-      .select('email')
-      .eq('email', email)
-      .single();
-
-    if (emailError && emailError.code !== 'PGRST116') {
-      alert("Error checking email: " + emailError.message);
-      return;
-    }
-
-    if (emailData) {
-      alert("Email is already in use.");
-      return;
-    }
-
-    // Check for duplicate username
-    const { data: usernameData, error: usernameError } = await supabase
-      .from('Users')
-      .select('username')
-      .eq('username', username)
-      .single();
-
-    if (usernameError && usernameError.code !== 'PGRST116') {
-      alert("Error checking username: " + usernameError.message);
-      return;
-    }
-
-    if (usernameData) {
-      alert("Username is already in use.");
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    
-    if (error) {
-      alert(error.message);
-    } else {
-      // Extract the uuid from the signed-up user
-      const uuid = data.user?.id;
-  
-      if (uuid) {
-        // Insert the uuid and email into the Users table
-        const { error: insertError } = await supabase
-          .from('Users')
-          .insert([{ user_uid: uuid, email, username }]);
-        if (insertError) {
-          alert("Error inserting user into Users table: " + insertError.message);
-        } else {
-          alert("Registered " + email + " successfully!");
-        }
-      } else {
-        alert("Error: User ID not found.");
-      }
+  const registerClickAction = async () => {
+    try {(await handleRegister({email, password, username}))}
+    catch(error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
     }
   }
 
@@ -174,7 +98,7 @@ export default function Home() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={handleLogin}>Login</Button>
+              <Button type="submit" onClick={loginClickAction}>Login</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -229,7 +153,7 @@ export default function Home() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" onClick={handleRegister}>Register</Button>
+              <Button type="submit" onClick={registerClickAction}>Register</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

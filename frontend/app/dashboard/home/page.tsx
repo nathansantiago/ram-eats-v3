@@ -12,10 +12,11 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 
 import axios from 'axios';
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { MealRecommendation, MealDetails, SelectedItem } from '@/app/models/models';
 
 const HomePage: React.FC = () => {
+    const supabase = createClient();
     const [mealRecommendations, setMealRecommendations] = useState<MealRecommendation>();
 
     useEffect(() => {

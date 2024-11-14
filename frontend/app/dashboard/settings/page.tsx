@@ -2,7 +2,7 @@
  
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { supabase } from '../../../lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { z } from "zod"
  
@@ -34,6 +34,8 @@ import {
     SelectValue,
   } from "@/components/ui/select"
   
+import { handleLogout } from "@/utils/auth";
+import { useToast } from "@/hooks/use-toast";
  
 const formSchema = z.object({
   username: z.string().max(30, {
@@ -66,32 +68,29 @@ const formSchema = z.object({
 })
 
 const SettingsPage: React.FC = () => {
+    const supabase = createClient();
     const router = useRouter();
+    const { toast } = useToast();
 
-    const handleLogout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) console.error('Error logging out:', error.message);
-        else {
-            console.log('User logged out');
-            router.replace('/');
+    const logoutClickAction = async () => {
+        try {
+            await handleLogout();
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
         }
-    };
+    }
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        // defaultValues: {
-        // username: "",
-        // },
     })
     
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        // console.log(values);
-
-        // Create a new object with the transformed gender value
         const transformedValues = {
             ...values,
             gender: values.gender ? values.gender === 1 : undefined,
@@ -317,7 +316,7 @@ const SettingsPage: React.FC = () => {
                     <Button type="submit">Save</Button>
                 </form>
             </Form>
-            <div className="pt-4"><Button onClick={handleLogout}>Log Out</Button></div>
+            <div className="pt-4"><Button onClick={logoutClickAction}>Log Out</Button></div>
         </div>
     );
 };

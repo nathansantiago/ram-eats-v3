@@ -20,11 +20,13 @@ import {
 import { Button } from "@/components/ui/button"
 import { Minus, Plus } from "lucide-react"
 import axios from 'axios';
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { MenuGetMenuOutput, MenuStations, MenuItem } from '@/app/models/models';
   
 
 const Menu: React.FC = () => {
+    const supabase = createClient();
+
     const [menu, setMenu] = useState<MenuGetMenuOutput>();
     const [portions, setPortions] = useState(0);
 
