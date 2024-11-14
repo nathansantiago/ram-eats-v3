@@ -59,7 +59,7 @@ const formSchema = z.object({
   }).optional(),
 })
 
-const SettingsPage: React.FC = () => {
+const SettingsPhysiquePage: React.FC = () => {
     const supabase = createClient();
     const router = useRouter();
     const { toast } = useToast();
@@ -115,15 +115,15 @@ const SettingsPage: React.FC = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
                                 <FormField
                                 control={form.control}
-                                name="username"
+                                name="height"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel>Height</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
+                                        <Input placeholder="56" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        This is your public display name.
+                                        This is your height in inches.
                                     </FormDescription>
                                     <FormMessage />
                                     </FormItem>
@@ -132,15 +132,15 @@ const SettingsPage: React.FC = () => {
                                 />
                                 <FormField
                                 control={form.control}
-                                name="email"
+                                name="weight"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>Weight</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="email@email.com" {...field} />
+                                        <Input placeholder="120" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        This is your email.
+                                        This is your weight in pounds.
                                     </FormDescription>
                                     <FormMessage />
                                     </FormItem>
@@ -149,15 +149,42 @@ const SettingsPage: React.FC = () => {
                                 />
                                 <FormField
                                 control={form.control}
-                                name="password"
+                                name="age"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Password</FormLabel>
+                                    <FormLabel>Age</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="password" {...field} />
+                                        <Input placeholder="20" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        This is your password.
+                                        This is your age in years.
+                                    </FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                    
+                                )}
+                                />
+                                <FormField
+                                control={form.control}
+                                name="gender"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Gender</FormLabel>
+                                    <Select onValueChange={field.onChange}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select the gender you identify as." />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="0">male</SelectItem>
+                                            <SelectItem value="1">female</SelectItem>
+                                            <SelectItem value="2">other</SelectItem>
+                                            <SelectItem value="3">prefer not to specify</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormDescription>
+                                        This is the gender you identify as.
                                     </FormDescription>
                                     <FormMessage />
                                     </FormItem>
@@ -172,4 +199,4 @@ const SettingsPage: React.FC = () => {
     );
 };
 
-export default SettingsPage;
+export default SettingsPhysiquePage;

@@ -59,7 +59,7 @@ const formSchema = z.object({
   }).optional(),
 })
 
-const SettingsPage: React.FC = () => {
+const SettingsPhysiquePage: React.FC = () => {
     const supabase = createClient();
     const router = useRouter();
     const { toast } = useToast();
@@ -115,15 +115,15 @@ const SettingsPage: React.FC = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
                                 <FormField
                                 control={form.control}
-                                name="username"
+                                name="maintenance_cal"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel>Activity Level</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
+                                        <Input placeholder="18" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        This is your public display name.
+                                        This is your estimated calories burned per day.
                                     </FormDescription>
                                     <FormMessage />
                                     </FormItem>
@@ -132,32 +132,24 @@ const SettingsPage: React.FC = () => {
                                 />
                                 <FormField
                                 control={form.control}
-                                name="email"
+                                name="fitness_goal"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="email@email.com" {...field} />
-                                    </FormControl>
+                                    <FormLabel>Fitness Goal</FormLabel>
+                                    <Select onValueChange={field.onChange}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a weight goal" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="0">bulk</SelectItem>
+                                            <SelectItem value="1">maintain</SelectItem>
+                                            <SelectItem value="2">cut</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormDescription>
-                                        This is your email.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="password" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your password.
+                                        This is your weight goal.
                                     </FormDescription>
                                     <FormMessage />
                                     </FormItem>
@@ -172,4 +164,4 @@ const SettingsPage: React.FC = () => {
     );
 };
 
-export default SettingsPage;
+export default SettingsPhysiquePage;
