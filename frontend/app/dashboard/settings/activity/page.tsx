@@ -112,7 +112,7 @@ const SettingsPhysiquePage: React.FC = () => {
     return (
         <div className="flex flex-col items-center">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 min-w-80">
                                 <FormField
                                 control={form.control}
                                 name="maintenance_cal"
@@ -156,10 +156,9 @@ const SettingsPhysiquePage: React.FC = () => {
                                     
                                 )}
                                 />
-                    <Button type="submit">Save</Button>
+                    <Button type="submit">Update Activity</Button>
                 </form>
             </Form>
-            <div className="pt-4"><Button onClick={logoutClickAction}>Log Out</Button></div>
         </div>
     );
 };

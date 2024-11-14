@@ -52,7 +52,7 @@ const Menu: React.FC = () => {
       }
 
     return (
-        <div>
+        <div className='w-full'>
             <Accordion type="single" collapsible>
             {menu && Object.entries(menu.meal_information).map(([stationName, menuItems]: [string, MenuItem[]]) => (
                     <AccordionItem value={stationName}>

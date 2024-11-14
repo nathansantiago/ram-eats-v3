@@ -8,7 +8,6 @@ import ProfileForm from "./profile-form";
 import { Button } from "@/components/ui/button"
 import { handleLogout } from "@/utils/auth";
 import { useToast } from "@/hooks/use-toast";
-import { Separator } from "@/components/ui/separator";
  
 const formSchema = z.object({
   username: z.string().max(30, {
@@ -60,7 +59,6 @@ const SettingsPage: React.FC = () => {
     return (
         <div className="space-y-6">
             <ProfileForm />
-            <Button onClick={logoutClickAction} className='w-full'>Log Out</Button>
         </div>
     );
 };

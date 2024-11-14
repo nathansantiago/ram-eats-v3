@@ -112,7 +112,7 @@ export default function ProfileForm() {
     return (
     <div className="flex flex-col items-center">
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 min-w-80">
                             <FormField
                             control={form.control}
                             name="username"
@@ -164,7 +164,8 @@ export default function ProfileForm() {
                                 
                             )}
                             />
-                <Button type="submit">Save</Button>
+                <Button onClick={logoutClickAction} className='w-full text-destructive hover:bg-destructive/90' variant={'ghost'}>Log Out</Button>
+                <Button type="submit">Update Account</Button>
             </form>
         </Form>
     </div>
