@@ -3,7 +3,7 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from 'next/navigation';
-
+import { LogOut } from "lucide-react";
 
 const Header: React.FC = () => {
     const router = useRouter();
@@ -17,12 +17,9 @@ const Header: React.FC = () => {
     }
 
     return (
-        <header className='flex justify-between'>
+        <header className='flex justify-between items-center'>
             <h1 className='title cursor-pointer' onClick={handleHome}>RamEats</h1>
-            {/* <Avatar onClick={handleProfile}>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-            </Avatar> */}
+            {/* <LogOut onClick={handleProfile} /> */}
         </header>
     );
 };

@@ -1,33 +1,14 @@
 "use client"
- 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { z } from "zod"
+import ProfileForm from "./profile-form";
  
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-  
 import { handleLogout } from "@/utils/auth";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
  
 const formSchema = z.object({
   username: z.string().max(30, {
@@ -76,98 +57,10 @@ const SettingsPage: React.FC = () => {
         }
     }
 
-    // 1. Define your form.
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-    })
-    
-    // 2. Define a submit handler.
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        const transformedValues = {
-            ...values,
-            gender: values.gender ? values.gender === 1 : undefined,
-        };
-
-        const definedValues = Object.fromEntries(
-            Object.entries(values).filter(([_, value]) => value !== undefined)
-        );
-
-        
-
-        // Upload the defined values to Supabase
-        const { data: user } = await supabase.auth.getUser();
-        const { data, error } = await supabase
-            .from('Users')
-            .update(definedValues)
-            .eq('user_uid', user?.user?.id)
-            .select();
-
-        if (error) {
-            console.error('Error uploading data:', error);
-        } else {
-            console.log('Data uploaded successfully:', data);
-        }
-    }
-
     return (
-        <div className="flex flex-col items-center">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
-                                <FormField
-                                control={form.control}
-                                name="username"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Username</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your public display name.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="email@email.com" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your email.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="password" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your password.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                    <Button type="submit">Save</Button>
-                </form>
-            </Form>
-            <div className="pt-4"><Button onClick={logoutClickAction}>Log Out</Button></div>
+        <div className="space-y-6">
+            <ProfileForm />
+            <Button onClick={logoutClickAction} className='w-full'>Log Out</Button>
         </div>
     );
 };
