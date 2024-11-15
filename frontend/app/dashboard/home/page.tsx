@@ -71,8 +71,8 @@ const HomePage: React.FC = () => {
     }, []);
 
     return (
-        <div className='flex flex-col w-full'>
-            <Card className="flex flex-col">
+        <div className='flex flex-col items-center'>
+            <Card className="flex flex-col max-w-sm w-full">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-2xl font-bold'>Today's Calorie Goal</CardTitle>
                     <CardDescription>November 11th 2024</CardDescription>
@@ -139,7 +139,7 @@ const HomePage: React.FC = () => {
             </Card>
 
             <Carousel 
-                className="w-full"
+                className="max-w-sm w-full"
                 opts={{
                     align: "start",
                     loop: true,
