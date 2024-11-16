@@ -19,3 +19,37 @@ export interface MealInformation {
 export interface MealRecommendation {
     meal_information: MealInformation;
 }
+
+export interface MenuGetMenuOutput {
+    meal_information: MenuStations
+}
+
+export interface MenuStations {
+    [key: string]: MenuItem[]; 
+}
+
+export interface MenuItem {
+    option_id: number;
+    station_id: number;
+    option_name: string;
+    AmountPerServing?: string;
+    "AmountPerServing½cup"?: string;
+    Calories: number;
+    TotalFat: number;
+    SaturatedFat: string;
+    TransFat: string;
+    Cholesterol: string;
+    Sodium: string;
+    TotalCarbohydrate: string;
+    DietaryFiber: string;
+    Sugars: string;
+    AddedSugar?: string;
+    Protein: number;
+    Calcium: string;
+    Iron: number;
+    Potassium: number;
+    VitaminD: number;
+    Soy?: string;
+    Wheat?: string;
+    Sesame?: string;
+}

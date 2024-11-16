@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request
 
 # internal
 from src.modules.meal_calculation.module import MealCalculationModule
-from src.api.recommend.io import RecommendationRecommendMealInput, RecommendationRecommendMealOutput
+from src.api.recommendation.io import RecommendationRecommendMealInput, RecommendationRecommendMealOutput
 
 recommendation_router: APIRouter = APIRouter(prefix="/recommendation", tags=["recommendation"])
 

@@ -1,39 +1,13 @@
 "use client"
- 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { supabase } from '../../../lib/supabase';
+
+import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { z } from "zod"
+import ProfileForm from "./profile-form";
  
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-  } from "@/components/ui/carousel"
-
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-  
+import { handleLogout } from "@/utils/auth";
+import { useToast } from "@/hooks/use-toast";
  
 const formSchema = z.object({
   username: z.string().max(30, {
@@ -66,258 +40,25 @@ const formSchema = z.object({
 })
 
 const SettingsPage: React.FC = () => {
+    const supabase = createClient();
     const router = useRouter();
+    const { toast } = useToast();
 
-    const handleLogout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) console.error('Error logging out:', error.message);
-        else {
-            console.log('User logged out');
-            router.replace('/');
-        }
-    };
-
-    // 1. Define your form.
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        // defaultValues: {
-        // username: "",
-        // },
-    })
-    
-    // 2. Define a submit handler.
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        // console.log(values);
-
-        // Create a new object with the transformed gender value
-        const transformedValues = {
-            ...values,
-            gender: values.gender ? values.gender === 1 : undefined,
-        };
-
-        const definedValues = Object.fromEntries(
-            Object.entries(values).filter(([_, value]) => value !== undefined)
-        );
-
-        
-
-        // Upload the defined values to Supabase
-        const { data: user } = await supabase.auth.getUser();
-        const { data, error } = await supabase
-            .from('Users')
-            .update(definedValues)
-            .eq('user_uid', user?.user?.id)
-            .select();
-
-        if (error) {
-            console.error('Error uploading data:', error);
-        } else {
-            console.log('Data uploaded successfully:', data);
+    const logoutClickAction = async () => {
+        try {
+            await handleLogout();
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
         }
     }
 
     return (
-        <div className="flex flex-col items-center">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
-                    <Carousel 
-                        className="w-full max-w-xs"
-                        opts={{
-                            align: "start",
-                            loop: true,
-                        }}
-                    >
-                        <CarouselContent>
-                            <CarouselItem key={1}>
-                                <FormField
-                                control={form.control}
-                                name="username"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Username</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="shadcn" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your public display name.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="email@email.com" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your email.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="password" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your password.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                            </CarouselItem>
-                            <CarouselItem key={2}>
-                                <FormField
-                                control={form.control}
-                                name="height"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Height</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="56" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your height in inches.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="weight"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Weight</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="120" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your weight in pounds.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="age"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Age</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="20" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your age in years.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                            </CarouselItem>
-                            <CarouselItem key={3}>
-                                <FormField
-                                control={form.control}
-                                name="maintenance_cal"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Activity Level</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="18" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        This is your estimated calories burned per day.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="gender"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Gender</FormLabel>
-                                    <Select onValueChange={field.onChange}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select the gender you identify as." />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="0">male</SelectItem>
-                                            <SelectItem value="1">female</SelectItem>
-                                            <SelectItem value="2">other</SelectItem>
-                                            <SelectItem value="3">prefer not to specify</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormDescription>
-                                        This is the gender you identify as.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                                <FormField
-                                control={form.control}
-                                name="fitness_goal"
-                                render={({ field }) => (
-                                    <FormItem>
-                                    <FormLabel>Fitness Goal</FormLabel>
-                                    <Select onValueChange={field.onChange}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a weight goal" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="0">bulk</SelectItem>
-                                            <SelectItem value="1">maintain</SelectItem>
-                                            <SelectItem value="2">cut</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormDescription>
-                                        This is your weight goal.
-                                    </FormDescription>
-                                    <FormMessage />
-                                    </FormItem>
-                                    
-                                )}
-                                />
-                            </CarouselItem>
-                        </CarouselContent>
-                        <div className='hidden sm:flex'>
-                            <CarouselPrevious />
-                            <CarouselNext />
-                        </div>
-                    </Carousel>
-                    <Button type="submit">Save</Button>
-                </form>
-            </Form>
-            <div className="pt-4"><Button onClick={handleLogout}>Log Out</Button></div>
+        <div className="space-y-6">
+            <ProfileForm />
         </div>
     );
 };

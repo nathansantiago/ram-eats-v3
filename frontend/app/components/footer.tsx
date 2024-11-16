@@ -10,6 +10,7 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
   } from "@/components/ui/navigation-menu"
+import { Home, Utensils, User } from "lucide-react"
 
 const Footer: React.FC = () => {
     return (
@@ -20,7 +21,7 @@ const Footer: React.FC = () => {
                         <NavigationMenuItem>
                         <Link href="/dashboard/home" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Home
+                            <Home/>
                             </NavigationMenuLink>
                         </Link>
                         </NavigationMenuItem>
@@ -29,7 +30,7 @@ const Footer: React.FC = () => {
                     <NavigationMenuItem>
                     <Link href="/dashboard/menu" legacyBehavior passHref>
                         <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                        Menu
+                        <Utensils/>
                         </NavigationMenuLink>
                     </Link>
                     </NavigationMenuItem>
@@ -38,7 +39,7 @@ const Footer: React.FC = () => {
                         <NavigationMenuItem>
                         <Link href="/dashboard/settings" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Settings
+                            <User/>
                             </NavigationMenuLink>
                         </Link>
                         </NavigationMenuItem>
