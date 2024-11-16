@@ -1,20 +1,19 @@
+"use server";
+
 import React from 'react';
 import Link from "next/link";
-import { useRouter } from 'next/router';
 import {
     NavigationMenu,
-    NavigationMenuContent,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
-    NavigationMenuTrigger,
     navigationMenuTriggerStyle,
-  } from "@/components/ui/navigation-menu"
-import { Home, Utensils, User } from "lucide-react"
+  } from "@/components/ui/navigation-menu";
+import { Home, Utensils, User } from "lucide-react";
 
 const Footer: React.FC = () => {
     return (
-        <footer>
+        <footer className='py-2'>
             <NavigationMenu>
                 <div className="flex gap-2">
                     <NavigationMenuList>

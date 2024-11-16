@@ -1,11 +1,10 @@
-"use client"
+"use client";
  
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { createClient } from '@/utils/supabase/client';
-import { z } from "zod"
- 
-import { Button } from "@/components/ui/button"
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,9 +13,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-  
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { handleLogout } from "@/utils/auth";
 import { useToast } from "@/hooks/use-toast";
  
@@ -48,21 +46,16 @@ export default function ProfileForm() {
         }
     }
 
-    // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     })
     
-    // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof formSchema>) {
 
         const definedValues = Object.fromEntries(
             Object.entries(values).filter(([_, value]) => value !== undefined)
         );
 
-        
-
-        // Upload the defined values to Supabase
         const { data: user } = await supabase.auth.getUser();
         const { data, error } = await supabase
             .from('Users')
@@ -86,6 +79,7 @@ export default function ProfileForm() {
           form.reset({username: '', email: '', password: ''});
         }
     }
+
     return (
     <div className="flex flex-col items-center">
         <Form {...form}>
