@@ -22,10 +22,13 @@ import { LoaderCircle, Minus, Plus } from "lucide-react"
 import axios from 'axios';
 import { createClient } from "@/utils/supabase/client";
 import { MenuGetMenuOutput, MenuStations, MenuItem } from '@/app/models/models';
+import { toast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
   
 
 const Menu: React.FC = () => {
     const supabase = createClient();
+    const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
     const [menu, setMenu] = useState<MenuGetMenuOutput>();
     const [portions, setPortions] = useState(0);
@@ -41,8 +44,13 @@ const Menu: React.FC = () => {
                 const response = await axios.get('http://localhost:8000/menu/get-menu');
                 setMenu(response.data);
                 setLoading(false);
-            } catch (error) {
-                console.error('Error fetching menu:', error);
+            } catch(error: any) {
+                toast({
+                  variant: "destructive",
+                  title: "Error",
+                  description: error.message,
+                });
+                router.push('/');
             }
         }
         fetchMenu();

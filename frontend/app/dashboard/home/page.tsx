@@ -30,6 +30,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { toast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 const chartData = [
   { browser: "safari", visitors: 1300, fill: "var(--color-safari)" },
@@ -47,6 +49,7 @@ const chartConfig = {
 
 const HomePage: React.FC = () => {
     const supabase = createClient();
+    const router = useRouter();
     const [mealRecommendations, setMealRecommendations] = useState<MealRecommendation>();
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -65,8 +68,13 @@ const HomePage: React.FC = () => {
                 });
                 setMealRecommendations(response.data);
                 setLoading(false);
-            } catch (error) {
-                console.error('Error fetching meal recommendations:', error);
+            } catch(error: any) {
+                toast({
+                  variant: "destructive",
+                  title: "Error",
+                  description: error.message,
+                });
+                router.push('/');
             }
         }
         fetchMealRecommendations();

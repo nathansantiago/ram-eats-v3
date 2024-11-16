@@ -112,7 +112,7 @@ const SettingsPhysiquePage: React.FC = () => {
     return (
         <div className="flex flex-col items-center">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 min-w-80">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full">
                                 <FormField
                                 control={form.control}
                                 name="maintenance_cal"
@@ -156,7 +156,7 @@ const SettingsPhysiquePage: React.FC = () => {
                                     
                                 )}
                                 />
-                    <Button type="submit">Update Activity</Button>
+                    <Button type="submit" className="mx-8">Update Activity</Button>
                 </form>
             </Form>
         </div>
