@@ -16,20 +16,15 @@ class ItemTrackerModule:
 
     async def track_food_item(self, input: UserMealTrackingInput) -> UserMealTrackingOutput:
         try:
-            response = await self.supabase.from_("UserMeals").select("*")\
-                .eq("user_uid", input.user_uid)\
-                .eq("option_id", input.option_id)\
-                .execute()
+            response = await self.supabase.from_("UserMeals").select("*").eq("user_uid", input.user_uid)\
+            .eq("option_id", input.option_id).execute()
             
             if response.data:
                 current_servings = response.data[0]["number_of_servings"]
                 new_servings = current_servings + input.number_of_servings
                 await self.supabase.from_("UserMeals").update({
                     "number_of_servings": new_servings
-                })\
-                .eq("user_uid", input.user_uid)\
-                .eq("option_id", input.option_id)\
-                .execute()
+                }).eq("user_uid", input.user_uid).eq("option_id", input.option_id).execute()
             else:
                 await self.supabase.from_("UserMeals").insert({
                     "user_uid": input.user_uid,

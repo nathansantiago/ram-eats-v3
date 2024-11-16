@@ -9,8 +9,10 @@ from supabase import AsyncClient, create_client
 # internal
 from src.globals.environment import Environment
 from src.modules.meal_calculation.module import MealCalculationModule
+from src.modules.item_tracker.module import ItemTrackerModule
 from src.api.recommendation.routes import recommendation_router
 from src.api.menu.routes import menu_router
+from src.api.nutrition_tracker.routes import meal_tracker_router
 
 async def setup_supabase(app: FastAPI):
     environment: Environment = app.state.environment
@@ -20,8 +22,12 @@ async def setup_supabase(app: FastAPI):
 def setup_modules(app: FastAPI):
     environment: Environment = app.state.environment
     supabase: AsyncClient = app.state.supabase
+
     meal_calculation_module: MealCalculationModule = MealCalculationModule(environment=environment, supabase=supabase)
     app.state.meal_calculation_module = meal_calculation_module
+
+    item_tracker_module: ItemTrackerModule = ItemTrackerModule(environment=environment, supabase=supabase)
+    app.state.item_tracker_module = item_tracker_module
 
 def setup_globals(app: FastAPI):
     environment: Environment = Environment()
@@ -55,6 +61,7 @@ app.add_middleware(
 
 app.include_router(recommendation_router)
 app.include_router(menu_router)
+app.include_router(meal_tracker_router)
 
 @app.get("/")
 async def root():
