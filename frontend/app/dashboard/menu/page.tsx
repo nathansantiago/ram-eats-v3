@@ -18,7 +18,7 @@ import {
     DrawerTrigger,
   } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
-import { Minus, Plus } from "lucide-react"
+import { LoaderCircle, Minus, Plus } from "lucide-react"
 import axios from 'axios';
 import { createClient } from "@/utils/supabase/client";
 import { MenuGetMenuOutput, MenuStations, MenuItem } from '@/app/models/models';
@@ -26,7 +26,7 @@ import { MenuGetMenuOutput, MenuStations, MenuItem } from '@/app/models/models';
 
 const Menu: React.FC = () => {
     const supabase = createClient();
-
+    const [loading, setLoading] = useState<boolean>(true);
     const [menu, setMenu] = useState<MenuGetMenuOutput>();
     const [portions, setPortions] = useState(0);
 
@@ -40,6 +40,7 @@ const Menu: React.FC = () => {
 
                 const response = await axios.get('http://localhost:8000/menu/get-menu');
                 setMenu(response.data);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching menu:', error);
             }
@@ -52,6 +53,7 @@ const Menu: React.FC = () => {
       }
 
     return (
+        loading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : (
         <div className='w-full'>
             <Accordion type="single" collapsible>
             {menu && Object.entries(menu.meal_information).map(([stationName, menuItems]: [string, MenuItem[]]) => (
@@ -138,6 +140,7 @@ const Menu: React.FC = () => {
             ))}
             </Accordion>
         </div>
+        )
     )
 }
 

@@ -15,7 +15,7 @@ import axios from 'axios';
 import { createClient } from "@/utils/supabase/client";
 import { MealRecommendation, MealDetails, SelectedItem } from '@/app/models/models';
 
-import { TrendingUp } from "lucide-react"
+import { LoaderCircle } from "lucide-react"
 import {
   Label,
   PolarGrid,
@@ -48,6 +48,7 @@ const chartConfig = {
 const HomePage: React.FC = () => {
     const supabase = createClient();
     const [mealRecommendations, setMealRecommendations] = useState<MealRecommendation>();
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchMealRecommendations = async () => {
@@ -63,6 +64,7 @@ const HomePage: React.FC = () => {
                     user_id: user_id,
                 });
                 setMealRecommendations(response.data);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching meal recommendations:', error);
             }
@@ -71,6 +73,7 @@ const HomePage: React.FC = () => {
     }, []);
 
     return (
+        loading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : (
         <div className='flex flex-col items-center'>
             <Card className="flex flex-col max-w-sm w-full">
                 <CardHeader className="items-center pb-0">
@@ -177,7 +180,7 @@ const HomePage: React.FC = () => {
                 </div>
             </Carousel>
         </div>
-    );
+    ));
 };
 
 export default HomePage;
