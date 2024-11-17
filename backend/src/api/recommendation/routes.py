@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request
 
 # internal
 from src.modules.meal_calculation.module import MealCalculationModule
-from src.api.recommendation.io import RecommendationRecommendMealInput, RecommendationRecommendMealOutput
+from src.api.recommendation.io import RecommendationRecommendMealInput, RecommendationRecommendMealOutput, IntakeGoalsInput, UpdateIntakeGoalsOutput, GetIntakeGoalsOutput
 
 recommendation_router: APIRouter = APIRouter(prefix="/recommendation", tags=["recommendation"])
 
@@ -30,4 +30,23 @@ async def recommendation_recommend_meal(input: RecommendationRecommendMealInput,
             "Simply Prepared Grill": simply_prepared_meal,
             "Kitchen Table": kitchen_table_meal
         }
+    )
+
+
+@recommendation_router.post("/update-intake-goals")
+async def update_intake_goals(input: IntakeGoalsInput, request: Request) -> UpdateIntakeGoalsOutput:
+    meal_calculation_module: MealCalculationModule = request.app.state.meal_calculation_module
+    meal_calculation_module.update_intake_amounts(input.user_uid)
+    return UpdateIntakeGoalsOutput(
+        success = True,
+        message = "Intake goals updated"
+    )
+
+
+@recommendation_router.get("/get-intake-goals")
+async def get_intake_goals(input: IntakeGoalsInput, request: Request) -> GetIntakeGoalsOutput:
+    meal_calculation_module: MealCalculationModule = request.app.state.meal_calculation_module
+    intake_goals: dict[str, any] = meal_calculation_module.get_intake_values(input.user_uid)
+    return GetIntakeGoalsOutput(
+        intake_goals = intake_goals
     )
