@@ -12,4 +12,4 @@ meal_tracker_router: APIRouter = APIRouter(prefix="/nutrition_tracker", tags=["m
 @meal_tracker_router.post("/track-item")
 async def track_food_item(input: UserMealTrackingInput, request: Request) -> UserMealTrackingOutput:
     item_tracker_module: ItemTrackerModule = request.app.state.item_tracker_module
-    return await item_tracker_module.track_food_item(input)
+    return item_tracker_module.track_food_item(input)
