@@ -11,3 +11,13 @@ class RecommendationRecommendMealInput(BaseModel):
 
 class RecommendationRecommendMealOutput(BaseModel):
     meal_information: Dict[str, Dict[str, Any]]
+
+class IntakeGoalsInput(BaseModel):
+    user_uid: str
+
+class UpdateIntakeGoalsOutput(BaseModel):
+    success: bool
+    message: str
+
+class GetIntakeGoalsOutput(BaseModel):
+    intake_goals: Dict[str, Any]

@@ -119,14 +119,37 @@ class MealCalculationModule:
             daily_tot_cal = maintenance_cal
 
         return daily_tot_cal
+    
+
+    def update_intake_amounts(self, user_uid: str) -> dict[str, any]:
+        user_data = self.get_user_data(user_uid)
+        daily_cal = self.calculate_daily_cal(user_data)
+        #TODO: Will need to tweak this amount to get it to a sweet spot
+        daily_protein = int(round((0.23 * daily_cal) / 4))
+        self.supabase.table('Users').update({
+            'daily_calorie_goal': daily_cal,
+            'daily_protein_intake': daily_protein
+        }).eq('user_uid', user_uid).execute()
+    
+
+    def get_intake_values(self, user_uid: str) -> dict[str, any]:
+        user_data = self.get_user_data(user_uid)
+        daily_cal = user_data["daily_calorie_goal"]
+        daily_protein = user_data["daily_protein_intake"]
+        return {
+            "calories": daily_cal,
+            "protein": daily_protein
+        }
+        
 
     def calculate_meal(self, user_data: dict[str, any], menu: list[dict[str, any]]) -> dict[str, any]:
+        #TODO: Potentially change this variable to pull the daily_cal directly from Users table in supabase
         daily_cal = self.calculate_daily_cal(user_data)
-        meal_cal = daily_cal // (user_data['meal_count'])
+        meal_cal = (daily_cal * .90) // (user_data['meal_count'])
         meal_cal_lower = meal_cal - 25
         meal_cal_upper = meal_cal + 25
-        protein_goal = 0.25 * meal_cal_upper
-        carbs_goal = 0.50 * meal_cal_upper
+        protein_goal = 0.23 * meal_cal_upper
+        carbs_goal = 0.52 * meal_cal_upper
         fats_goal = 0.25 * meal_cal_upper
 
         selected_items = {}
