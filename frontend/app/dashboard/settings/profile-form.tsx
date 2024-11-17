@@ -2,7 +2,6 @@
  
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { createClient } from '@/utils/supabase/client';
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { handleLogout } from "@/utils/auth";
 import { useToast } from "@/hooks/use-toast";
+import {onSubmit } from "@/utils/settings-page/submit-form";
  
 const formSchema = z.object({
   username: z.string().max(30, {
@@ -31,7 +31,6 @@ const formSchema = z.object({
 })
 
 export default function ProfileForm() {
-    const supabase = createClient();
     const { toast } = useToast();
 
     const logoutClickAction = async () => {
@@ -47,43 +46,31 @@ export default function ProfileForm() {
     }
 
     const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+      resolver: zodResolver(formSchema),
     })
-    
-    async function onSubmit(values: z.infer<typeof formSchema>) {
 
-        const definedValues = Object.fromEntries(
-            Object.entries(values).filter(([_, value]) => value !== undefined)
-        );
-
-        const { data: user } = await supabase.auth.getUser();
-        const { data, error } = await supabase
-            .from('Users')
-            .update(definedValues)
-            .eq('user_uid', user?.user?.id)
-            .select();
-
-        if (error) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: error.message,
-          });
-        } else {
-          console.log('Data uploaded successfully:', data);
-          toast({
-            variant: "default",
-            title: "Success",
-            description: "Your profile has been updated.",
-          });
-          form.reset({username: '', email: '', password: ''});
-        }
+  async function handleSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await onSubmit(values);
+      form.reset({username: '', email: '', password: ''}); // Clear the form fields
+      toast({
+          variant: "default",
+          title: "Success",
+          description: "Account updated successfully.",
+      });
+    } catch (error: any) {
+      toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+      });
     }
+  }
 
     return (
     <div className="flex flex-col items-center">
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-6 w-full">
                   <FormField
                   control={form.control}
                   name="username"
