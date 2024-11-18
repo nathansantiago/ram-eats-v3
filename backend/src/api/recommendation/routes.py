@@ -1,7 +1,7 @@
 # builtin
 
 # external
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Query
 
 # internal
 from src.modules.meal_calculation.module import MealCalculationModule
@@ -43,7 +43,7 @@ async def update_intake_goals(input: IntakeGoalsInput, request: Request) -> Upda
     )
 
 
-@recommendation_router.get("/get-intake-goals")
+@recommendation_router.post("/get-intake-goals")
 async def get_intake_goals(input: IntakeGoalsInput, request: Request) -> GetIntakeGoalsOutput:
     meal_calculation_module: MealCalculationModule = request.app.state.meal_calculation_module
     intake_goals: dict[str, any] = meal_calculation_module.get_intake_values(input.user_uid)

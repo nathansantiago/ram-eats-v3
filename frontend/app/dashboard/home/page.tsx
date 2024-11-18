@@ -13,7 +13,7 @@ import { Card, CardContent } from "@/components/ui/card"
 
 import axios from 'axios';
 import { createClient } from "@/utils/supabase/client";
-import { MealRecommendation, MealDetails, SelectedItem } from '@/app/models/models';
+import { MealRecommendation, MealDetails, SelectedItem, IntakeGoals } from '@/app/models/models';
 
 import { LoaderCircle } from "lucide-react"
 import {
@@ -51,6 +51,7 @@ const HomePage: React.FC = () => {
     const supabase = createClient();
     const router = useRouter();
     const [mealRecommendations, setMealRecommendations] = useState<MealRecommendation>();
+    const [intakeGoals, setIntakeGoals] = useState<IntakeGoals>();
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -67,6 +68,10 @@ const HomePage: React.FC = () => {
                     user_id: user_id,
                 });
                 setMealRecommendations(response.data);
+                const response2 = await axios.post('http://localhost:8000/recommendation/get-intake-goals', {
+                    user_uid: user_id
+                });
+                setIntakeGoals(response2.data);
                 setLoading(false);
             } catch(error: any) {
                 toast({
@@ -154,7 +159,7 @@ const HomePage: React.FC = () => {
                                 </CardContent>
                                 <CardFooter className="flex-col gap-2 text-sm">
                                     <div className="flex items-center gap-2 font-medium leading-none">
-                                    Today's Calorie Goal: 2000
+                                    Today's Calorie Goal: {intakeGoals?.intake_goals.calories}
                                     </div>
                                 </CardFooter>
                             </Card>
