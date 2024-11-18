@@ -58,7 +58,41 @@ const Menu: React.FC = () => {
 
     function adjustPortion(adjustment: number) {
         setPortions(Math.max(0, Math.min(5, portions + adjustment)))
-      }
+    }
+
+    function test() {console.log("test")}
+
+    async function addToAccount(item: MenuItem) {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                throw new Error('User is not logged in.');
+            }
+
+            const userId = session.user.id;
+            const response = await axios.post('http://localhost:8000/nutrition_tracker/track-item', {
+                "user_uid": userId,
+                "option_id": item.option_id,
+                "number_of_servings": portions
+            });
+
+            if (response.status === 200) {
+                toast({
+                    variant: "default",
+                    title: "Success",
+                    description: "Portions added to account successfully.",
+                });
+            } else {
+                throw new Error('Failed to add portions to account.');
+            }
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
+        }
+    }
 
     return (
         loading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : (
@@ -90,13 +124,11 @@ const Menu: React.FC = () => {
                                             <DrawerDescription className='text-lg'><span className="font-bold">Sodium:</span> {item.Sodium}</DrawerDescription>
                                             <DrawerDescription className='text-lg'><span className="font-bold">Calcium:</span> {item.Calcium}</DrawerDescription>
                                             <DrawerDescription className='text-lg'><span className="font-bold">Vitamin D:</span> {item.VitaminD}mcg</DrawerDescription>
-                                            {/* <DrawerDescription className='text-lg'>Added Sugar: {item.AddedSugar ? item.AddedSugar : "0g"}</DrawerDescription> */}
                                             <DrawerDescription className='text-lg'><span className="font-bold">Potassium:</span> {item.Potassium}mg</DrawerDescription>
                                             <DrawerDescription className='text-lg'><span className="font-bold">Cholesterol:</span> {item.Cholesterol}</DrawerDescription>
                                         </div>
                                         {(item.Soy || item.Wheat || item.Sesame) && (
                                                 <>
-                                                    {/* <DrawerDescription className='text-lg font-bold'>Allergen Warnings</DrawerDescription> */}
                                                     {item.Soy && <DrawerDescription className='text-lg font-bold'>Contains Soy</DrawerDescription>}
                                                     {item.Wheat && <DrawerDescription className='text-lg font-bold'>Contains Wheat</DrawerDescription>}
                                                     {item.Sesame && <DrawerDescription className='text-lg font-bold'>Contains Sesame</DrawerDescription>}
@@ -134,7 +166,7 @@ const Menu: React.FC = () => {
                                             <span className="sr-only">Increase</span>
                                         </Button>
                                     </div>
-                                    <Button>Add to account</Button>
+                                    <Button onClick={() => addToAccount(item)}>Add to account</Button>
                                     <DrawerClose>
                                         <Button variant="outline">Close</Button>
                                     </DrawerClose>

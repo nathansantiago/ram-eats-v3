@@ -53,3 +53,12 @@ export interface MenuItem {
     Wheat?: string;
     Sesame?: string;
 }
+
+export interface IntakeGoals {
+    intake_goals: IntakeGoal;
+}
+
+export interface IntakeGoal {
+    calories: number;
+    protein: number;
+}
