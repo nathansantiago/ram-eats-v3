@@ -13,7 +13,7 @@ import { Card, CardContent } from "@/components/ui/card"
 
 import axios from 'axios';
 import { createClient } from "@/utils/supabase/client";
-import { MealRecommendation, MealDetails, SelectedItem, IntakeGoals } from '@/app/models/models';
+import { MealRecommendation, MealDetails, SelectedItem, IntakeGoals, IntakeValues } from '@/app/models/models';
 
 import { LoaderCircle } from "lucide-react"
 import {
@@ -33,10 +33,6 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
-const chartData = [
-  { category: "safari", visitors: 1300, fill: "var(--color-safari)" },
-]
-
 const chartConfig = {
     visitors: {
       label: "Visitors",
@@ -52,6 +48,7 @@ const HomePage: React.FC = () => {
     const router = useRouter();
     const [mealRecommendations, setMealRecommendations] = useState<MealRecommendation>();
     const [intakeGoals, setIntakeGoals] = useState<IntakeGoals>();
+    const [intakeValues, setIntakeValues] = useState<IntakeValues>();
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -72,6 +69,15 @@ const HomePage: React.FC = () => {
                     user_uid: user_id
                 });
                 setIntakeGoals(response2.data);
+                try {
+                    const response3 = await axios.post('http://localhost:8000/nutrition_tracker/get-daily-intake-values', {
+                        user_uid: user_id,
+                        date: new Date()
+                    });
+                    setIntakeValues(response3.data);
+                } catch(error: any) {
+                    console.error('Failed to get daily intake values.');
+                }
                 setLoading(false);
             } catch(error: any) {
                 toast({
@@ -84,6 +90,10 @@ const HomePage: React.FC = () => {
         }
         fetchMealRecommendations();
     }, []);
+
+    const chartData = [
+        { category: "safari", visitors: intakeValues ? intakeValues?.calories : 0, fill: "var(--color-safari)" },
+      ]
 
     return (
         loading ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : (

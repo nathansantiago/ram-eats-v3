@@ -62,3 +62,10 @@ export interface IntakeGoal {
     calories: number;
     protein: number;
 }
+
+export interface IntakeValues {
+    date: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+}

@@ -20,7 +20,7 @@ async def track_food_item(input: UserMealTrackingInput, request: Request) -> Use
         message = "Item tracked successfully, and daily intakes updated"
     )
 
-@meal_tracker_router.get("/get-daily-intake-values")
+@meal_tracker_router.post("/get-daily-intake-values")
 async def get_daily_intakes(input: UserDailyIntakeInput, request: Request) -> UserDailyIntakeOutput:
     item_tracker_module: ItemTrackerModule = request.app.state.item_tracker_module
     return item_tracker_module.get_daily_intakes(input)
