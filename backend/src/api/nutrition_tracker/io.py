@@ -14,3 +14,15 @@ class UserMealTrackingInput(BaseModel):
 class UserMealTrackingOutput(BaseModel):
     success: bool
     message: str
+
+
+class UserDailyIntakeInput(BaseModel):
+    user_uid: str
+    date: str
+
+
+class UserDailyIntakeOutput(BaseModel):
+    date: str
+    calories: int
+    protein: int
+    carbs: int

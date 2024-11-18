@@ -8,7 +8,7 @@ from datetime import date
 
 #internal
 from src.globals.environment import Environment
-from src.api.nutrition_tracker.io import UserMealTrackingInput, UserMealTrackingOutput
+from src.api.nutrition_tracker.io import UserMealTrackingInput, UserDailyIntakeInput, UserDailyIntakeOutput
 
 
 class ItemTrackerModule:
@@ -62,16 +62,44 @@ class ItemTrackerModule:
             
             today = date.today().isoformat()
 
-            self.supabase.from_("UserDailyIntakes").upsert(
-                {
+            existing_response = self.supabase.from_("UserDailyIntakes").select("*")\
+                .eq("user_uid", input.user_uid)\
+                .eq("date", today).execute()
+
+            if existing_response.data:
+                existing_data = existing_response.data[0]
+                new_calories = existing_data["calories_consumed"] + calories
+                new_protein = existing_data["protein_consumed"] + protein
+                new_carbs = existing_data["carbs_consumed"] + carbs
+
+                self.supabase.from_("UserDailyIntakes").update({
+                    "calories_consumed": new_calories,
+                    "protein_consumed": new_protein,
+                    "carbs_consumed": new_carbs
+                }).eq("user_uid", input.user_uid).eq("date", today).execute()
+            else:
+                self.supabase.from_("UserDailyIntakes").insert({
                     "user_uid": input.user_uid,
                     "date": today,
                     "calories_consumed": calories,
                     "protein_consumed": protein,
                     "carbs_consumed": carbs
-                },
-                on_conflict= "user_uid, date"
-            ).execute()
+                }).execute()
 
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+        
+
+    def get_daily_intakes(self, input: UserDailyIntakeInput) -> UserDailyIntakeOutput:
+        date = input.date
+        response = self.supabase.from_("UserDailyIntakes").select("*").eq("user_uid", input.user_uid).eq("date", date).execute()
+        
+        if not response.data:
+            raise HTTPException(status_code= 404, detail = "No intake data found for the given date or user")
+        
+        return UserDailyIntakeOutput(
+            date = response.data[0]["date"],
+            calories = response.data[0]["calories_consumed"],
+            protein = response.data[0]["protein_consumed"],
+            carbs = response.data[0]["carbs_consumed"]
+        )
